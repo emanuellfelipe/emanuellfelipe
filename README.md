@@ -15,7 +15,7 @@ Hi 👋, im Emanuel Laureano
 [![Linkedin](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](www.linkedin.com/in/emanuellaureanof)
 [![Instagram](https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://www.instagram.com/emanuellfelipe_/)
 
-![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=emanuellfelipe&theme=tokyonight)
+<p>&nbsp;<img align="center" src="https://github-readme-stats.vercel.app/api?username=emanuellfelipe&show_icons=true&locale=en" alt="emanuellfelipe" /></p>
 
 ## Tecnologias que Utilizo 🖥️ 
 
@@ -26,4 +26,4 @@ Hi 👋, im Emanuel Laureano
 ![css3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
 
 <!-- Elemento abaixo -->
-![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=emanuellfelipe&layout=compact)
+<p><img align="left" src="https://github-readme-stats.vercel.app/api/top-langs?username=emanuellfelipe&show_icons=true&locale=en&layout=compact" alt="emanuellfelipe" /></p>

@@ -2,12 +2,15 @@
 
 Hi 👋, im Emanuel Laureano
 
- - I'm graduating at Universidade Federal Rural de Pernambuco(UFRPE) and currently work on Seed a Bit Technology.
+ - I'm graduating at Universidade Federal Rural de Pernambuco(UFRPE) and currently work on Lojas Quero Quero.
  
      <div style="padding-bottom: 20px;">- I'm a passionate Information Systems student who adores sci-fi and excels in web development. Proficient in Python, HTML5, CSS3, and dabbling in Java and JavaScript, I create captivating and responsive web experiences. With a thirst for constant growth, I blend futuristic inspiration with evolving technology to innovate and contribute effectively.</div>
    
 
 - <a href="seedabit.org.br">Seed a Bit Website: </h5></a>  My first commercial project at Seed a Bit, my team was responsible for developing the company website in it's totality. Here i used HTML, CSS and Javascript to build advanced features, such as forms and objects with very specific styling. Most of the basic features and the blog were built using Wordpress.
+
+- <a href="[emilianealencastro.com](https://emilianealencastro.com/)">Emiliane Alencastro Website: </h5></a>  For my second commercial project at Seed a Bit, my team was responsible for developing the company website in its entirety. Here I used HTML, CSS, and Javascript to build advanced features, such as forms and objects with very specific styling. Most of the basic features and the blog were built using Wordpress. 
+
  
  - You can contact me here: <a href="mailto:emanuel.laureanof@gmail.com?body=Hi%2C%20i%20wanna%20talk%20with%20Emanuel%20Laureano">emanuel.laureanof@gmail.com<a/>
 

@@ -40,7 +40,7 @@ I'm a passionate developer who loves sci-fi and specializes in modern web develo
 
 ---
 
-### 📊 Estatísticas
+### 📊 Stats
 
 <p>
   <img 

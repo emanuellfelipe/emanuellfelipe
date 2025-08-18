@@ -40,6 +40,6 @@ I'm a passionate developer who loves sci-fi and specializes in modern web develo
 
 ---
 
-<p>&nbsp;<img align="center" src="https://github-readme-stats.vercel.app/api?username=emanuellfelipe&show_icons=true&locale=en" alt="emanuellfelipe" /></p>
+![Emanuel's GitHub stats](https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app/api?username=emanuellfelipe&show_icons=true)
 
-<p><img align="left" src="https://github-readme-stats.vercel.app/api/top-langs?username=emanuellfelipe&show_icons=true&locale=en&layout=compact" alt="emanuellfelipe" /></p>
+![Top Langs](https://github-readme-stats-git-masterrstaa-rickstaa.vercel.app/api/top-langs/?username=emanuellfelipe&layout=compact)

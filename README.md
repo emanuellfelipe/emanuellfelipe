@@ -8,7 +8,7 @@ I'm an Information Systems student at the **Federal Rural University of Pernambu
 
 💻 **About Me**
 
-I'm a passionate developer who loves sci-fi and specializes in modern web development. With strong experience in **Python, HTML5, CSS3, and JavaScript**, and some knowledge of **Java**, I build responsive and engaging digital experiences. I'm driven by continuous growth and always looking for ways to innovate through technology.
+I'm a passionate developer who loves sci-fi and specializes in modern web development. With strong experience in **Full Stack Web Development and RPA Development**, and some knowledge of **DevOPS**, I build responsive and engaging digital experiences. I'm driven by continuous growth and always looking for ways to innovate through technology.
 
 ---
 

@@ -11,7 +11,7 @@ glyphs that card uses and embedded as base64 WOFF data URIs.
 
 Motion rules
   * Every delay is offset by the card's start time (TIMELINE) so the page plays
-    top to bottom: hero, tiles, chart, repos, graph.
+    top to bottom: hero, tiles, graph (and repos, if any are featured).
   * Keyframes only define a `from` state. The element's own attributes are the
     final frame, so switching animation off always lands on the final frame.
   * SMIL only lives inside <g class="m">. Anything it moves has a static twin in
@@ -44,17 +44,25 @@ PROFILE = json.loads((ROOT / "profile.json").read_text(encoding="utf-8"))
 DATA_FILE = ROOT / "data" / "contributions.json"
 
 # ── Theme ────────────────────────────────────────────────────────────────────
-# Flat neutrals and one accent. The accent only marks data: graph cells, the
-# busiest month and day, the live streak. No gradients anywhere.
-PANEL, LINE, CHIP = "#0F1012", "#25272C", "#16171A"
-TEXT, SOFT, MUTED, FAINT = "#EDEDEF", "#B9BBC1", "#82858D", "#50535A"
-BAR, GHOST = "#2B2D33", "#1A1B1F"
-ACCENT = "#8B7CFF"
-RAMP = ["#191A1E", "#2D2A4D", "#463F86", "#6659C2", "#8B7CFF"]  # graph levels 0-4, one hue
+# GitHub's own palette. Cards are drawn with the dark-theme colours; LIGHT maps
+# each one to its light-theme twin, applied under prefers-color-scheme: light
+# through attribute selectors (CSS beats presentation attributes).
+PANEL, LINE, CHIP = "#0D1117", "#3D444D", "#151B23"
+TEXT, SOFT, MUTED, FAINT = "#F0F6FC", "#D1D7E0", "#9198A1", "#656C76"
+GHOST = "#151B23"
+ACCENT = "#3FB950"  # GitHub green
+RAMP = ["#151B23", "#033A16", "#196C2E", "#2EA043", "#56D364"]  # contribution levels 0-4
+LIGHT = {
+    PANEL: "#FFFFFF", LINE: "#D1D9E0", TEXT: "#1F2328", SOFT: "#393F46", MUTED: "#59636E",
+    FAINT: "#818B98", ACCENT: "#1A7F37",
+    RAMP[0]: "#EFF2F5", RAMP[1]: "#ACEEBB", RAMP[2]: "#4AC26B", RAMP[3]: "#2DA44E", RAMP[4]: "#116329",
+}
+LIGHT_CSS = "@media (prefers-color-scheme:light){" + "".join(
+    f'[fill="{d}"]{{fill:{l}}}[stroke="{d}"]{{stroke:{l}}}' for d, l in LIGHT.items()) + "}"
 
 # Start time (s) of each card on the shared page timeline.
-TIMELINE = {"hero": 0.0, "tile": 0.55, "tile_step": 0.15, "chart": 1.15,
-            "repo": 1.85, "repo_step": 0.2, "graph_gap": 0.15}
+TIMELINE = {"hero": 0.0, "tile": 0.55, "tile_step": 0.15, "graph": 1.1,
+            "repo": 1.6, "repo_step": 0.2}
 
 MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 
@@ -186,7 +194,7 @@ class Card:
         return (
             f'<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" '
             f'width="{self.w}" height="{self.h}" viewBox="0 0 {self.w} {self.h}" role="img" aria-label="{label}">'
-            f"<title>{label}</title><style>{fonts}{MOTION_CSS}{''.join(self.css)}{reduced}</style>"
+            f"<title>{label}</title><style>{fonts}{MOTION_CSS}{''.join(self.css)}{LIGHT_CSS}{reduced}</style>"
             f"<defs>{''.join(self.defs)}</defs>{''.join(self.parts)}</svg>\n"
         )
 
@@ -213,38 +221,7 @@ class Stats:
         start = self.today - dt.timedelta(days=364)
         year = [(d, c) for d, c in self.counts.items() if d >= start]
         self.total = sum(c for _, c in year)
-        self.active = sum(1 for _, c in year if c)
         self.busiest = max(year, key=lambda dc: (dc[1], dc[0]), default=(self.today, 0))
-        self.current = self._current_streak()
-        self.longest = self._longest_streak()
-        self.months = self._months()
-
-    def _current_streak(self) -> int:
-        day = self.today
-        if not self.counts.get(day):  # today isn't over yet: a streak can still end yesterday
-            day -= dt.timedelta(days=1)
-        n = 0
-        while self.counts.get(day):
-            n += 1
-            day -= dt.timedelta(days=1)
-        return n
-
-    def _longest_streak(self) -> int:
-        best = run = 0
-        prev = None
-        for day in sorted(d for d, c in self.counts.items() if c):
-            run = run + 1 if prev and (day - prev).days == 1 else 1
-            best, prev = max(best, run), day
-        return best
-
-    def _months(self) -> list[tuple[int, int, int]]:
-        out = []
-        for back in range(11, -1, -1):
-            idx = self.today.year * 12 + self.today.month - 1 - back
-            y, m = divmod(idx, 12)
-            total = sum(c for d, c in self.counts.items() if d.year == y and d.month == m + 1)
-            out.append((y, m + 1, total))
-        return out
 
 
 # ── Hero ─────────────────────────────────────────────────────────────────────
@@ -371,74 +348,6 @@ def tile_card(tile: dict, i: int) -> Card:
     return c
 
 
-# ── Contributions chart ──────────────────────────────────────────────────────
-def chart_card(s: Stats) -> Card:
-    w, h = 840, 372
-    c = Card("contributions", w, h, TIMELINE["chart"],
-             f"{plural(s.total, 'contribution')} in the last 12 months; current streak {plural(s.current, 'day')}, "
-             f"{s.active} active days, busiest day {fmt_date(s.busiest[0])}")
-    panel(c)
-    left, right = 44, w - 44
-
-    c.add(f'<g{c.anim("rise", 0.1)}>{c.text(left, 52, "CONTRIBUTIONS · LAST 12 MONTHS", "mono", 11, MUTED, ls=2)}</g>')
-    big = f"{s.total:,}"
-    big_w = FACES["display"].width(big, 42, -0.5)
-    c.add(f'<g{c.anim("rise", 0.18)}>{c.text(left, 102, big, "display", 42, TEXT, ls=-0.5)}'
-          f'{c.text(left + big_w + 10, 102, "contributions", "body", 16, MUTED)}</g>')
-
-    stats = [
-        ("STREAK", f"{s.current}", " day" if s.current == 1 else " days", f"best {s.longest}"),
-        ("ACTIVE DAYS", f"{s.active}", "", "of the last 365"),
-        ("BUSIEST DAY", f"{s.busiest[1]}", "", fmt_date(s.busiest[0]) if s.busiest[1] else "nothing yet"),
-    ]
-    for i, (label, value, unit, sub) in enumerate(stats):
-        x = 452 + i * 128
-        d = 0.25 + i * 0.1
-        vw = FACES["display"].width(value, 26)
-        c.add(f'<g{c.anim("rise", d)}>'
-              + c.text(x, 52, label, "mono", 10, FAINT, ls=1.5)
-              + c.text(x, 86, value, "display", 26, TEXT)
-              + (c.text(x + vw + 3, 86, unit, "body", 13, MUTED) if unit else "")
-              + c.text(x, 106, sub, "mono", 10.5, MUTED) + "</g>")
-        if label == "STREAK" and s.current:
-            px, py = x - 12, 48.5
-            c.add(f'<circle cx="{px}" cy="{py}" r="3" fill="{ACCENT}"{c.anim("zoom", d + 0.2, 0.5)}/>',
-                  f'<g class="m"><circle cx="{px}" cy="{py}" r="3" fill="none" stroke="{ACCENT}" opacity="0">'
-                  f'<animate attributeName="r" values="3;10" dur="2s" begin="{c.at(1.0)}" repeatCount="indefinite"/>'
-                  f'<animate attributeName="opacity" values=".8;0" dur="2s" begin="{c.at(1.0)}" repeatCount="indefinite"/>'
-                  "</circle></g>")
-
-    c.add(f'<g{c.anim("growx", 0.3)}><rect x="{left}" y="132" width="{right - left}" height="1" fill="{LINE}"/></g>')
-
-    top, base = 170, 314
-    peak = max((m[2] for m in s.months), default=0)
-    grid = "".join(
-        f'<line x1="{left}" y1="{base - (base - top) * frac:.1f}" x2="{right}" y2="{base - (base - top) * frac:.1f}" '
-        f'stroke="{LINE}" stroke-dasharray="3 5"/>' for frac in (0.5, 1.0))
-    c.add(f'<g{c.anim("fade", 0.35, 0.8)}>{grid}<line x1="{left}" y1="{base}" x2="{right}" y2="{base}" stroke="{LINE}"/></g>')
-
-    slot = (right - left) / len(s.months)
-    bw = min(36.0, slot * 0.56)
-    best = max(range(len(s.months)), key=lambda k: s.months[k][2]) if peak else -1
-    for i, (year, month, total) in enumerate(s.months):
-        cx = left + slot * (i + 0.5)
-        bh = max(3.0, (total / peak) * (base - top)) if peak else 3.0
-        d = 0.45 + i * 0.06
-        fill = ACCENT if i == best else BAR
-        c.add(f'<rect x="{cx - bw / 2:.1f}" y="{base - bh:.1f}" width="{bw:.1f}" height="{bh:.1f}" rx="6" fill="{fill}"'
-              f'{c.anim("grow", d)}/>')
-        c.add(f'<g{c.anim("fade", d + 0.55, 0.5)}>'
-              + c.text(cx, base - bh - 9, f"{total:,}", "mono", 11, TEXT if i == best else MUTED, anchor="middle")
-              + "</g>")
-        is_now = i == len(s.months) - 1
-        year_tag = (c.text(cx, base + 38, f"'{year % 100:02d}", "mono", 9.5, FAINT, anchor="middle")
-                    if month == 1 or i == 0 else "")
-        c.add(f'<g{c.anim("fade", d, 0.6)}>'
-              + c.text(cx, base + 22, MONTHS[month - 1], "mono", 11, TEXT if is_now else FAINT, anchor="middle")
-              + year_tag + "</g>")
-    return c
-
-
 # ── Featured repos ───────────────────────────────────────────────────────────
 def star(x: float, y: float, r: float) -> str:
     pts = []
@@ -541,9 +450,9 @@ def graph_card(s: Stats, t0: float) -> Card:
 
     if busiest_xy:  # ring the busiest day; it pulses while motion is on
         bx, by = busiest_xy
-        c.add(f'<circle cx="{bx:.1f}" cy="{by:.1f}" r="9" fill="none" stroke="{SOFT}" stroke-width="1.2"'
+        c.add(f'<circle cx="{bx:.1f}" cy="{by:.1f}" r="9" fill="none" stroke="{ACCENT}" stroke-width="1.4"'
               f'{c.anim("zoom", 1.6, 0.6)}/>',
-              f'<g class="m"><circle cx="{bx:.1f}" cy="{by:.1f}" r="9" fill="none" stroke="{SOFT}" opacity="0">'
+              f'<g class="m"><circle cx="{bx:.1f}" cy="{by:.1f}" r="9" fill="none" stroke="{ACCENT}" opacity="0">'
               f'<animate attributeName="r" values="9;18" dur="2.2s" begin="{c.at(2.0)}" repeatCount="indefinite"/>'
               f'<animate attributeName="opacity" values=".7;0" dur="2.2s" begin="{c.at(2.0)}" repeatCount="indefinite"/>'
               "</circle></g>")
@@ -559,7 +468,7 @@ def graph_card(s: Stats, t0: float) -> Card:
                     "mono", 10, MUTED) if s.busiest[1] else "")
           + "</g>")
     if s.busiest[1]:
-        c.add(f'<circle cx="{left - 10}" cy="{ly - 3.5}" r="3.5" fill="none" stroke="{SOFT}" stroke-width="1.2"'
+        c.add(f'<circle cx="{left - 10}" cy="{ly - 3.5}" r="3.5" fill="none" stroke="{ACCENT}" stroke-width="1.4"'
               f'{c.anim("zoom", 1.4, 0.6)}/>')
     return c
 
@@ -583,8 +492,7 @@ def readme_blocks(prefix: str) -> dict[str, str]:
                 f'alt="{escape(p["name"])}: {escape(p["tagline"])}"></p>',
         "contact": f'<p align="center">\n{tiles}\n</p>',
         "projects": projects,
-        "activity": f'<p align="center"><img src="{prefix}contributions.svg" width="100%" alt="Contributions per month"></p>\n'
-                    f'<p align="center"><img src="{prefix}graph.svg" width="100%" alt="Contribution graph"></p>',
+        "activity": f'<p align="center"><img src="{prefix}graph.svg" width="100%" alt="Contribution graph"></p>',
     }
 
 
@@ -693,13 +601,12 @@ def main() -> None:
 
     cards = [hero_card()]
     cards += [tile_card(t, i) for i, t in enumerate(PROFILE["tiles"])]
-    cards.append(chart_card(stats))
     featured = PROFILE.get("featured", [])
     for i, item in enumerate(featured):
         meta = data.get("repos", {}).get(item["repo"]) or next(
             (v for k, v in data.get("repos", {}).items() if k.lower() == item["repo"].lower()), {})
         cards.append(repo_card(item, meta, i, TIMELINE["repo"] + i * TIMELINE["repo_step"]))
-    cards.append(graph_card(stats, TIMELINE["repo"] + len(featured) * TIMELINE["repo_step"] + TIMELINE["graph_gap"]))
+    cards.append(graph_card(stats, TIMELINE["graph"]))
 
     OUT.mkdir(parents=True, exist_ok=True)
     expected = {f"{c.name}.svg" for c in cards}

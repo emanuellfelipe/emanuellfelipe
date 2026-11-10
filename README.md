@@ -46,6 +46,5 @@ I'm a full-stack developer who works mostly on modern web applications and **RPA
 ## 📈 GitHub Activity
 
 <!-- cards:activity:start -->
-<p align="center"><img src="cards/contributions.svg" width="100%" alt="Contributions per month"></p>
 <p align="center"><img src="cards/graph.svg" width="100%" alt="Contribution graph"></p>
 <!-- cards:activity:end -->

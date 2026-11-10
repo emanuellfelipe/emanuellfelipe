@@ -249,22 +249,23 @@ class Stats:
 
 # ── Hero ─────────────────────────────────────────────────────────────────────
 def hero_card() -> Card:
-    w, h = 840, 300
     name, tagline = PROFILE["name"], PROFILE["tagline"]
-    c = Card("hero", w, h, TIMELINE["hero"], f"{name}: {tagline}")
-    panel(c, 18)
-
     portrait = ROOT / PROFILE["portrait"] if PROFILE.get("portrait") else None
     if portrait is not None and not portrait.is_file():
         log.warning("portrait %s not found; rendering the hero without it", portrait)
         portrait = None
-    has_portrait = portrait is not None
+    has_portrait, has_stack = portrait is not None, bool(PROFILE.get("stack"))
+    # The card is tall enough for the portrait or the stack chips; with neither it
+    # shrinks to the text. dy shifts the text block so it stays vertically centred.
+    w = 840
+    h = 300 if has_portrait or has_stack else 214
+    dy = 0 if has_stack else (24 if has_portrait else -14)
+    c = Card("hero", w, h, TIMELINE["hero"], f"{name}: {tagline}")
+    panel(c, 18)
     left, max_w = 48, (548 if has_portrait else w - 96)
 
     kicker = PROFILE.get("kicker", "").upper()
     k_size = FACES["mono"].fit(kicker, 12, max_w, ls=2.2)
-    # Without stack chips the text block moves down to sit centred beside the portrait.
-    dy = 0 if PROFILE.get("stack") else 24
     c.add(f'<g{c.anim("rise", 0.25)}>{c.text(left, 88 + dy, kicker, "mono", k_size, MUTED, ls=2.2)}</g>')
 
     n_size = FACES["display"].fit(name, 56, max_w)

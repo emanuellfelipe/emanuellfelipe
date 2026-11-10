@@ -1,6 +1,8 @@
 [![UFRPE Devs badge](https://raw.githubusercontent.com/ufrpe-devs/comunidade/main/media/ufrpe-devs-badge.svg)](https://github.com/ufrpe-devs/comunidade)
 
-# Hi 👋, I'm Emanuel Laureano
+<!-- cards:hero:start -->
+<p align="center"><img src="cards/hero.svg" width="100%" alt="Emanuel Laureano: Tech Lead at Port &amp; Awake: full-stack web, RPA and a soft spot for sci-fi."></p>
+<!-- cards:hero:end -->
 
 I'm an Information Systems student at the **Federal Rural University of Pernambuco (UFRPE)** and currently work as **Tech Lead at Port Promotora**, a fintech focused on financial solutions in the Brazilian credit market.
 
@@ -23,9 +25,11 @@ I'm a passionate developer who loves sci-fi and specializes in modern web develo
 
 📫 **Contact Me**
 
-[![Gmail](https://img.shields.io/badge/Gmail-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:emanuel.laureanof@gmail.com?body=Hi%2C%20I%20wanna%20talk%20with%20Emanuel%20Laureano)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/emanuellaureanof)
-[![Instagram](https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://www.instagram.com/emanuellfelipe_/)
+<!-- cards:contact:start -->
+<p align="center">
+<a href="https://www.linkedin.com/in/emanuellaureanof"><img src="cards/tile-linkedin.svg" width="32.5%" alt="LinkedIn: in/emanuellaureanof"></a> <a href="mailto:emanuel.laureanof@gmail.com"><img src="cards/tile-email.svg" width="32.5%" alt="Email: emanuel.laureanof@gmail.com"></a> <a href="https://www.instagram.com/emanuellfelipe_/"><img src="cards/tile-instagram.svg" width="32.5%" alt="Instagram: @emanuellfelipe_"></a>
+</p>
+<!-- cards:contact:end -->
 
 ---
 
@@ -39,3 +43,10 @@ I'm a passionate developer who loves sci-fi and specializes in modern web develo
 ![Figma](https://img.shields.io/badge/figma-%23F24E1E.svg?style=for-the-badge&logo=figma&logoColor=white)
 
 ---
+
+## 📈 GitHub Activity
+
+<!-- cards:activity:start -->
+<p align="center"><img src="cards/contributions.svg" width="100%" alt="Contributions per month"></p>
+<p align="center"><img src="cards/graph.svg" width="100%" alt="Contribution graph"></p>
+<!-- cards:activity:end -->

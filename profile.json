@@ -1,0 +1,35 @@
+{
+  "login": "emanuellfelipe",
+  "name": "Emanuel Laureano",
+  "kicker": "Software engineer · Tech lead · Recife, BR",
+  "tagline": "Tech Lead at Port & Awake: full-stack web, RPA and a soft spot for sci-fi.",
+  "portrait": "assets/portrait.jpg",
+  "stack": [],
+  "tiles": [
+    {
+      "id": "linkedin",
+      "icon": "linkedin",
+      "label": "LinkedIn",
+      "title": "Let's connect",
+      "sub": "in/emanuellaureanof",
+      "href": "https://www.linkedin.com/in/emanuellaureanof"
+    },
+    {
+      "id": "email",
+      "icon": "mail",
+      "label": "Email",
+      "title": "Say hello",
+      "sub": "emanuel.laureanof@gmail.com",
+      "href": "mailto:emanuel.laureanof@gmail.com"
+    },
+    {
+      "id": "instagram",
+      "icon": "instagram",
+      "label": "Instagram",
+      "title": "Off the clock",
+      "sub": "@emanuellfelipe_",
+      "href": "https://www.instagram.com/emanuellfelipe_/"
+    }
+  ],
+  "featured": []
+}
